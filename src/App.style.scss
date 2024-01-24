@@ -1,18 +1,23 @@
+@font-face {
+    font-family: 'Ubuntu Mono';
+    src: local('Ubuntu Mono'), url('../public/assets/ubuntu_mono.ttf') format('ttf');
+}
+
 body {
-    margin: 0;
+    margin: unset;
     height: 100vh;
     width: 100vw;
 
+    font-size: 1em;
+    font-family: "Ubuntu Mono", monospace;
+    font-weight: 400;
+    line-height: 19px;
+    
+    background-color: #1e1e1e;
+    color: white;
+
     > #root {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         height: inherit;
         width: inherit;
-
-        > iframe {
-            height: 100%;
-            width: 100%;
-        }
     }
 }

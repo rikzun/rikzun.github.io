@@ -1,5 +1,5 @@
 {
-  "name": "web-template",
+  "name": "resume",
   "version": "1.0.0",
   "author": "rikzun",
   "scripts": {
@@ -7,6 +7,7 @@
     "build": "webpack build --progress"
   },
   "dependencies": {
+    "docx": "^8.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
