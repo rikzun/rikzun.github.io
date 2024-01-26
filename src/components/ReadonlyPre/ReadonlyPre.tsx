@@ -38,15 +38,13 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
     }
 
     const onBeforeInput = (e: FormEvent<HTMLPreElement>) => {
-        println(`${e.type} called and canceled`, 'crimson')
+        println(`${e.type} ${e.cancelable} called and canceled`, 'crimson')
 
         return eventCancel(e)
     }
 
     const onInput = (e: FormEvent<HTMLPreElement>) => {
-        println(`${e.type} called and canceled`, 'crimson')
-        //@ts-ignore
-        e.target.innerText = e.target.innerText
+        println(`${e.type} ${e.cancelable} called and canceled`, 'crimson')
         return eventCancel(e)
     }
 
