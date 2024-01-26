@@ -65,12 +65,12 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             spellCheck={false}
             onCut={preventDefault}
             onPaste={preventDefault}
-            onInput={preventDefault}
+            onBeforeInput={preventDefault}
             onKeyDown={onKeyDown}
             contentEditable
             suppressContentEditableWarning
         >
-            {props.value.split('\n').map((rawLine) => {
+            1{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
