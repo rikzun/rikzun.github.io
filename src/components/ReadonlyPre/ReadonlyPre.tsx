@@ -22,7 +22,11 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
         ...array(12).map((v) => `F${v + 1}`)
     ]
 
-    const preventDefault = (e: SyntheticEvent) => e.preventDefault()
+    const preventDefault = (e: SyntheticEvent) => {
+        e.preventDefault()
+        return false
+    }
+
     const onKeyDown = (e: KeyboardEvent) => {
         setKeys((v) => [...v, `{code: ${e.code}, key: ${e.key}, keyCode: ${e.keyCode}}`])
 
@@ -39,9 +43,12 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             .filter((key) => key.startsWith('on') && !skipEvents.some((v) => key.includes(v)))
             .forEach((event) => {
                 //@ts-ignore
-                ref.current!![event] = (e: any) => {
-                    console.log(e)
-                    setEvents((v) => [...v, e.type])
+                if (!ref.current!![event]) {
+                    //@ts-ignore
+                    ref.current!![event] = (e: any) => {
+                        console.log(e)
+                        setEvents((v) => [...v, e.type])
+                    }
                 }
             })
     }, [])
