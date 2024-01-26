@@ -35,7 +35,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             onCut={preventDefault}
             onPaste={preventDefault}
             onKeyDown={onKeyDown}
-            onInput={preventDefault}
+            onBeforeInput={preventDefault}
             contentEditable
             suppressContentEditableWarning
         >
