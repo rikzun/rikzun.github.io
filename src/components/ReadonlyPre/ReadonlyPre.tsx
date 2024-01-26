@@ -1,13 +1,14 @@
 import { array, trimStart } from 'src/utils'
 import './ReadonlyPre.styles.scss'
 import type { SyntheticEvent, KeyboardEvent, FormEvent } from 'react'
-import { useState, Fragment } from 'react'
+import { useState, createRef, Fragment } from 'react'
 
 interface ReadonlyPreProps { value: string }
 
 export function ReadonlyPre(props: ReadonlyPreProps) {
+    const ref = createRef<HTMLPreElement>()
     const [line, setLine] = useState<[string, string][]>([])
-    const println = (value: string, color: string = 'wheat') => setLine((v) => [...v, [value, color]])
+    const println = (value: any, color: string = 'wheat') => setLine((v) => [...v, [value, color]])
 
     const acceptableKeyCodes = [
         'Tab',
@@ -29,23 +30,25 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
-        if (!acceptableKeyCodes.includes(e.code)) {
-            println(`${e.type} called and canceled`, 'crimson')
-            return eventCancel(e)
+        if (e.keyCode == 229) {
+            println(e.cancelable)
+            const selection = window.getSelection()!
+            const range = selection.getRangeAt(0)
+            const offset = range.startOffset - 1
+
+            if (offset) {
+                range.setStart(range.startContainer, offset)
+                range.collapse(true)
+                selection.removeAllRanges()
+                selection.addRange(range)
+            }
         }
 
-        println(`${e.type} called`, 'wheat')
-    }
-
-    const onBeforeInput = (e: FormEvent<HTMLPreElement>) => {
-        println(`${e.type} ${e.cancelable} called and canceled`, 'crimson')
-
-        return eventCancel(e)
+        if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
     }
 
     const onInput = (e: FormEvent<HTMLPreElement>) => {
-        println(`${e.type} ${e.cancelable} called and canceled`, 'crimson')
-        return eventCancel(e)
+        if (e.cancelable) return eventCancel(e)
     }
 
     /* {`{
@@ -55,17 +58,18 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     return (
         <pre
+            ref={ref}
             className="container"
             spellCheck={false}
             onCut={eventCancel}
             onPaste={eventCancel}
-            onBeforeInput={onBeforeInput}
+            onBeforeInput={eventCancel}
             onInput={onInput}
             onKeyDown={onKeyDown}
             contentEditable
             suppressContentEditableWarning
         >
-            12{props.value.split('\n').map((rawLine) => {
+            14{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
