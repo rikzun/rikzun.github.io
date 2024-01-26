@@ -29,17 +29,12 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
-        if (e.keyCode == 229) {
-            const selection = window.getSelection()!
-            const range = selection.getRangeAt(0)
-            const offset = range.startOffset
-
-            range.setStart(range.startContainer, offset)
-            range.collapse(true)
-            selection.removeAllRanges()
-            selection.addRange(range)
+        if (!acceptableKeyCodes.includes(e.code)) {
+            println(`${e.type} called and canceled`, 'crimson')
+            return eventCancel(e)
         }
-        if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
+
+        println(`${e.type} called`, 'wheat')
     }
 
     const onBeforeInput = (e: FormEvent<HTMLPreElement>) => {
@@ -50,7 +45,8 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     const onInput = (e: FormEvent<HTMLPreElement>) => {
         println(`${e.type} called and canceled`, 'crimson')
-
+        //@ts-ignore
+        e.target.innerText = e.target.innerText
         return eventCancel(e)
     }
 
@@ -71,7 +67,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             contentEditable
             suppressContentEditableWarning
         >
-            11{props.value.split('\n').map((rawLine) => {
+            12{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
