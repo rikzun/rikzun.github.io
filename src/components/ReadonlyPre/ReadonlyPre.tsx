@@ -22,15 +22,16 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
         ...array(12).map((v) => `F${v + 1}`)
     ]
 
-    const preventDefault = (e: SyntheticEvent) => {
+    const eventCancel = (e: SyntheticEvent) => {
         e.preventDefault()
+        e.stopPropagation()
         return false
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
         setKeys((v) => [...v, `{code: ${e.code}, key: ${e.key}, keyCode: ${e.keyCode}}`])
 
-        if (!acceptableKeyCodes.includes(e.code)) return preventDefault(e)
+        if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
     }
 
     useEffect(() => {
@@ -63,14 +64,15 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             ref={ref}
             className="container"
             spellCheck={false}
-            onCut={preventDefault}
-            onPaste={preventDefault}
-            onBeforeInput={preventDefault}
+            onCut={eventCancel}
+            onPaste={eventCancel}
+            onInput={eventCancel}
+            onBeforeInput={eventCancel}
             onKeyDown={onKeyDown}
             contentEditable
             suppressContentEditableWarning
         >
-            1{props.value.split('\n').map((rawLine) => {
+            2{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
