@@ -18,7 +18,11 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
         ...array(12).map((v) => `F${v + 1}`)
     ]
 
-    const preventDefault = (e: SyntheticEvent) => e.preventDefault()
+    const preventDefault = (e: SyntheticEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+    
     const onKeyDown = (e: KeyboardEvent) => {
         if (!acceptableKeyCodes.includes(e.code)) return preventDefault(e)
     }
