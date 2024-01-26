@@ -29,14 +29,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
-        const keyOutput = (isCanceled: boolean) => `{code: ${e.code}, key: ${e.key ?? null}, keyCode: ${e.keyCode}, isCanceled: ${isCanceled}}`
-
-        if (!acceptableKeyCodes.includes(e.code)) {
-            println(keyOutput(true), 'grey')
-            return eventCancel(e)
-        }
-
-        println(keyOutput(false), 'wheat')
+        if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
     }
 
     const onBeforeInput = (e: FormEvent<HTMLPreElement>) => {
@@ -56,6 +49,16 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     const onInput = (e: FormEvent<HTMLPreElement>) => {
         println(`event ${e.type} called!`, 'greenyellow')
+
+        const selection = window.getSelection()!!
+        const range = selection.getRangeAt(0)
+        const offset = range.startOffset
+
+        range.setStart(range.startContainer, offset)
+        range.collapse(true)
+        selection.removeAllRanges()
+        selection.addRange(range)
+
         return eventCancel(e)
     }
 
@@ -76,7 +79,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             contentEditable
             suppressContentEditableWarning
         >
-            6{props.value.split('\n').map((rawLine) => {
+            10{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
