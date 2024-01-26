@@ -6,7 +6,7 @@ interface ReadonlyPreProps { value: string }
 
 export function ReadonlyPre(props: ReadonlyPreProps) {
     const ref = createRef<HTMLPreElement>()
-    const [keys, setKeys] = useState<[string, number][]>([])
+    const [keys, setKeys] = useState<string[]>([])
     const [events, setEvents] = useState<string[]>([])
 
     const acceptableKeyCodes = [
@@ -24,8 +24,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     const preventDefault = (e: SyntheticEvent) => e.preventDefault()
     const onKeyDown = (e: KeyboardEvent) => {
-        console.log(e)
-        setKeys((v) => [...v, [e.code, e.keyCode]])
+        setKeys((v) => [...v, `{code: ${e.code}, key: ${e.key}, keyCode: ${e.keyCode}, which: ${e.which}}`])
 
         if (!acceptableKeyCodes.includes(e.code)) return preventDefault(e)
     }
@@ -36,7 +35,10 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             .filter((event) => !event.includes("pointer") && !event.includes("mouse") && !event.includes("key"))
             .forEach((event) => {
                 //@ts-ignore
-                ref.current!![event] = (e: any) => setEvents((v) => [...v, e.type])
+                ref.current!![event] = (e: any) => {
+                    console.log(e)
+                    setEvents((v) => [...v, e.type])
+                }
             })
     }, [])
 
@@ -63,16 +65,16 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             })}
 
             <br />
-            {keys.map(([code, key], i) => (
-                <Fragment key={code + key + i}>
-                    <span className='key'>{code} / {key}</span>
+            {keys.map((v, i) => (
+                <Fragment key={v + i}>
+                    <span className='key'>{v}</span>
                     <br />
                 </Fragment>
             ))}
             
             <br />
-            {events.map((v) => (
-                <Fragment key={v}>
+            {events.map((v, i) => (
+                <Fragment key={v + i}>
                     <span className='event'>{v}</span>
                     <br />
                 </Fragment>
