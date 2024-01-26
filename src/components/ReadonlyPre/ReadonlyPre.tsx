@@ -36,11 +36,6 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     const onBeforeInput = (e: FormEvent<HTMLPreElement>) => {
         setEvents((v) => [...v, e.type])
-        return eventCancel(e)
-    }
-
-    const onInput = (e: FormEvent<HTMLPreElement>) => {
-        setEvents((v) => [...v, e.type])
 
         const selection = window.getSelection()!!
         const range = selection.getRangeAt(0)
@@ -84,12 +79,11 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             onCut={eventCancel}
             onPaste={eventCancel}
             onBeforeInput={onBeforeInput}
-            onInput={onInput}
             onKeyDown={onKeyDown}
             contentEditable
             suppressContentEditableWarning
         >
-            4{props.value.split('\n').map((rawLine) => {
+            5{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
