@@ -24,15 +24,19 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     const preventDefault = (e: SyntheticEvent) => e.preventDefault()
     const onKeyDown = (e: KeyboardEvent) => {
-        setKeys((v) => [...v, `{code: ${e.code}, key: ${e.key}, keyCode: ${e.keyCode}, which: ${e.which}}`])
+        setKeys((v) => [...v, `{code: ${e.code}, key: ${e.key}, keyCode: ${e.keyCode}}`])
 
         if (!acceptableKeyCodes.includes(e.code)) return preventDefault(e)
     }
 
     useEffect(() => {
+        const skipEvents = [
+            'pointer', 'mouse', 'key', 'touch',
+            'cut', 'paste', 'input'
+        ]
+
         Object.keys(window)
-            .filter((key) => key.startsWith('on'))
-            .filter((event) => !event.includes("pointer") && !event.includes("mouse") && !event.includes("key"))
+            .filter((key) => key.startsWith('on') && !skipEvents.some((v) => key.includes(v)))
             .forEach((event) => {
                 //@ts-ignore
                 ref.current!![event] = (e: any) => {
@@ -54,6 +58,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             spellCheck={false}
             onCut={preventDefault}
             onPaste={preventDefault}
+            onInput={preventDefault}
             onKeyDown={onKeyDown}
             contentEditable
             suppressContentEditableWarning
