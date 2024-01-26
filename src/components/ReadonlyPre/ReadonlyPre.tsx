@@ -29,35 +29,27 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
+        if (e.keyCode == 229) {
+            const selection = window.getSelection()!
+            const range = selection.getRangeAt(0)
+            const offset = range.startOffset
+
+            range.setStart(range.startContainer, offset)
+            range.collapse(true)
+            selection.removeAllRanges()
+            selection.addRange(range)
+        }
         if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
     }
 
     const onBeforeInput = (e: FormEvent<HTMLPreElement>) => {
-        println(`event ${e.type} called!`, 'greenyellow')
-
-        const selection = window.getSelection()!!
-        const range = selection.getRangeAt(0)
-        const offset = range.startOffset
-
-        range.setStart(range.startContainer, offset)
-        range.collapse(true)
-        selection.removeAllRanges()
-        selection.addRange(range)
+        println(`${e.type} called and canceled`, 'crimson')
 
         return eventCancel(e)
     }
 
     const onInput = (e: FormEvent<HTMLPreElement>) => {
-        println(`event ${e.type} called!`, 'greenyellow')
-
-        const selection = window.getSelection()!!
-        const range = selection.getRangeAt(0)
-        const offset = range.startOffset
-
-        range.setStart(range.startContainer, offset)
-        range.collapse(true)
-        selection.removeAllRanges()
-        selection.addRange(range)
+        println(`${e.type} called and canceled`, 'crimson')
 
         return eventCancel(e)
     }
@@ -79,7 +71,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             contentEditable
             suppressContentEditableWarning
         >
-            10{props.value.split('\n').map((rawLine) => {
+            11{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
