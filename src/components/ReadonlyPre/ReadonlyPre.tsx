@@ -1,13 +1,13 @@
 import { array, trimStart } from 'src/utils'
 import './ReadonlyPre.styles.scss'
-import { type SyntheticEvent, type KeyboardEvent, useState, useEffect, createRef, Fragment, type FormEvent } from 'react'
+import type { SyntheticEvent, KeyboardEvent, FormEvent } from 'react'
+import { useState, Fragment } from 'react'
 
 interface ReadonlyPreProps { value: string }
 
 export function ReadonlyPre(props: ReadonlyPreProps) {
-    const ref = createRef<HTMLPreElement>()
-    const [keys, setKeys] = useState<string[]>([])
-    const [events, setEvents] = useState<string[]>([])
+    const [line, setLine] = useState<[string, string][]>([])
+    const println = (value: string, color: string = 'wheat') => setLine((v) => [...v, [value, color]])
 
     const acceptableKeyCodes = [
         'Tab',
@@ -29,13 +29,18 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
-        setKeys((v) => [...v, `{code: ${e.code}, key: ${e.key}, keyCode: ${e.keyCode}}`])
-        console.log(e)
-        if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
+        const keyOutput = (isCanceled: boolean) => `{code: ${e.code}, key: ${e.key ?? null}, keyCode: ${e.keyCode}, isCanceled: ${isCanceled}}`
+
+        if (!acceptableKeyCodes.includes(e.code)) {
+            println(keyOutput(true), 'grey')
+            return eventCancel(e)
+        }
+
+        println(keyOutput(false), 'wheat')
     }
 
     const onBeforeInput = (e: FormEvent<HTMLPreElement>) => {
-        setEvents((v) => [...v, e.type])
+        println(`event ${e.type} called!`, 'greenyellow')
 
         const selection = window.getSelection()!!
         const range = selection.getRangeAt(0)
@@ -49,22 +54,10 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
         return eventCancel(e)
     }
 
-    useEffect(() => {
-        const skipEvents = ['pointer', 'mouse', 'key', 'touch']
-
-        Object.keys(window)
-            .filter((key) => key.startsWith('on') && !skipEvents.some((v) => key.includes(v)))
-            .forEach((event) => {
-                //@ts-ignore
-                if (!ref.current!![event]) {
-                    //@ts-ignore
-                    ref.current!![event] = (e: any) => {
-                        console.log(e)
-                        setEvents((v) => [...v, e.type])
-                    }
-                }
-            })
-    }, [])
+    const onInput = (e: FormEvent<HTMLPreElement>) => {
+        println(`event ${e.type} called!`, 'greenyellow')
+        return eventCancel(e)
+    }
 
     /* {`{
                 kekw
@@ -73,34 +66,26 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     return (
         <pre
-            ref={ref}
             className="container"
             spellCheck={false}
             onCut={eventCancel}
             onPaste={eventCancel}
             onBeforeInput={onBeforeInput}
+            onInput={onInput}
             onKeyDown={onKeyDown}
             contentEditable
             suppressContentEditableWarning
         >
-            5{props.value.split('\n').map((rawLine) => {
+            6{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
             })}
+            <br />
 
-            <br />
-            {keys.map((v, i) => (
-                <Fragment key={v + i}>
-                    <span className='key'>{v}</span>
-                    <br />
-                </Fragment>
-            ))}
-            
-            <br />
-            {events.map((v, i) => (
-                <Fragment key={v + i}>
-                    <span className='event'>{v}</span>
+            {line.map(([value, color], i) => (
+                <Fragment key={value + color + i}>
+                    <span style={{color}}>{value}</span>
                     <br />
                 </Fragment>
             ))}
