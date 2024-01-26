@@ -1,6 +1,6 @@
 import { array, trimStart } from 'src/utils'
 import './ReadonlyPre.styles.scss'
-import { type SyntheticEvent, type KeyboardEvent, useState, useEffect, createRef, Fragment } from 'react'
+import { type SyntheticEvent, type KeyboardEvent, useState, useEffect, createRef, Fragment, type FormEvent } from 'react'
 
 interface ReadonlyPreProps { value: string }
 
@@ -30,15 +30,32 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     const onKeyDown = (e: KeyboardEvent) => {
         setKeys((v) => [...v, `{code: ${e.code}, key: ${e.key}, keyCode: ${e.keyCode}}`])
-
+        console.log(e)
         if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
     }
 
+    const onBeforeInput = (e: FormEvent<HTMLPreElement>) => {
+        setEvents((v) => [...v, e.type])
+        return eventCancel(e)
+    }
+
+    const onInput = (e: FormEvent<HTMLPreElement>) => {
+        setEvents((v) => [...v, e.type])
+
+        const selection = window.getSelection()!!
+        const range = selection.getRangeAt(0)
+        const offset = range.startOffset
+
+        range.setStart(range.startContainer, offset)
+        range.collapse(true)
+        selection.removeAllRanges()
+        selection.addRange(range)
+
+        return eventCancel(e)
+    }
+
     useEffect(() => {
-        const skipEvents = [
-            'pointer', 'mouse', 'key', 'touch',
-            'cut', 'paste', 'input'
-        ]
+        const skipEvents = ['pointer', 'mouse', 'key', 'touch']
 
         Object.keys(window)
             .filter((key) => key.startsWith('on') && !skipEvents.some((v) => key.includes(v)))
@@ -66,13 +83,13 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             spellCheck={false}
             onCut={eventCancel}
             onPaste={eventCancel}
-            onInput={eventCancel}
-            onBeforeInput={eventCancel}
+            onBeforeInput={onBeforeInput}
+            onInput={onInput}
             onKeyDown={onKeyDown}
             contentEditable
             suppressContentEditableWarning
         >
-            2{props.value.split('\n').map((rawLine) => {
+            4{props.value.split('\n').map((rawLine) => {
                 const line = trimStart(rawLine, 4).split(' ')
                 // console.log(line)
                 return <span>{line}</span>
