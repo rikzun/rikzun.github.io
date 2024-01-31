@@ -1,6 +1,6 @@
 import { Range } from "src/utils/range"
 import { Token } from "./CodeHighlight.types"
-import type { ReactNode } from "react"
+import type { ReactElement, ReactNode } from "react"
 
 export const CodeHighlightService = new class {
     regex = {
@@ -41,18 +41,21 @@ export const CodeHighlightService = new class {
     }
 
     buildNodes(line: string, tokens: Map<Range, Token>) {
-        const nodeList: ReactNode[] = [...line.split('')]
+        const nodeList: (string|ReactElement)[] = [...line.split('')]
 
         Array.from(tokens.entries())
             .sort((a, b) => a[0].start < b[0].start ? 1 : -1)
-            .forEach(([range, token]) => {
-                let element: ReactNode
+            .forEach(([range, token], i) => {
+                let element: ReactElement
                 const string = nodeList.slice(range.start, range.end).join('')
 
                 switch(token.subtype) {
                     default: {
                         element = (
-                            <span className={token.toClassName()}>
+                            <span
+                                className={token.toClassName()}
+                                key={string + i}
+                            >
                                 {string}
                             </span>
                         )
@@ -65,6 +68,7 @@ export const CodeHighlightService = new class {
                         element = (
                             <a
                                 className={token.toClassName()}
+                                key={title + value + i}
                                 href={value}
                                 target={value.startsWith('mailto:') ? undefined : '_blank'}
                                 contentEditable={false}
@@ -80,5 +84,14 @@ export const CodeHighlightService = new class {
             })
 
         return nodeList
+    }
+
+    getLineLength(nodes: (string|ReactElement)[]) {
+        return nodes.reduce((acc, v) => {
+            switch (typeof v) {
+                case 'string': return acc + v.length
+                case 'object': return acc + (v.props.children as string).length
+            }
+        }, 0)
     }
 }()
