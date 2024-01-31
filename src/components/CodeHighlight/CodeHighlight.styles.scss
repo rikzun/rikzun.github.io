@@ -1,0 +1,14 @@
+.highlight {
+    .string { color: #CE9178 }
+    .numeric { color: #B5CEA8 }
+    .reserved { color: #569CD6 }
+    .variable { color: #4FC1FF }
+    .object-key { color: #9CDCFE }
+
+    .string__link {
+        cursor: pointer;
+        text-underline-offset: 2px;
+    }
+
+    caret-color: white;
+}

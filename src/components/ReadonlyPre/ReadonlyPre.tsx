@@ -1,7 +1,8 @@
-import { array, trimStart } from 'src/utils'
+import { array } from 'src/utils/utils'
 import './ReadonlyPre.styles.scss'
 import type { SyntheticEvent, KeyboardEvent, FormEvent } from 'react'
 import { useState } from 'react'
+import { CodeHighlight } from '../CodeHighlight'
 
 interface ReadonlyPreProps { value: string }
 
@@ -11,6 +12,8 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
 
     const acceptableKeyCodes = [
         'Tab',
+        'ShiftLeft',
+        'ShiftRight',
         'Home',
         'End',
         'PageUp',
@@ -22,6 +25,10 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
         ...array(12).map((v) => `F${v + 1}`)
     ]
 
+    const acceptableCtrlKeyCodes = [
+        'KeyA', 'KeyC'
+    ]
+
     const eventCancel = (e: SyntheticEvent) => {
         e.preventDefault()
         e.stopPropagation()
@@ -29,18 +36,14 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
+        if (e.ctrlKey && acceptableCtrlKeyCodes.includes(e.code)) return
         if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
     }
 
     const onInput = (e: FormEvent<HTMLPreElement>) => {
         if (e.cancelable) return eventCancel(e)
-        updateKey()
+        updateKey() // for fucking android and firefox
     }
-
-    /* {`{
-                kekw
-            }\n`.split('\n').map((v) => trimStart(v, 12)).join('\n')}
-            <span onClick={downloadPDF}>█████</span> */
 
     return (
         <pre
@@ -55,11 +58,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             contentEditable
             suppressContentEditableWarning
         >
-            {props.value.split('\n').map((rawLine) => {
-                const line = trimStart(rawLine, 4).split(' ')
-                // console.log(line)
-                return <span>{line}</span>
-            })}
+            <CodeHighlight value={props.value} />
         </pre>
     )
 }

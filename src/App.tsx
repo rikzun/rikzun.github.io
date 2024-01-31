@@ -1,7 +1,7 @@
 import './App.style.scss'
 import { Packer, Document } from "docx"
-import { ReadonlyPre } from './components/ReadonlyPre/ReadonlyPre'
-import { saveBlob } from './utils'
+import { ReadonlyPre } from './components/ReadonlyPre'
+import { saveBlob } from './utils/utils'
 
 // function downloadPDF() {
 //     const file = new Document({
@@ -21,8 +21,8 @@ export function App() {
       address: 'Russia, Novorossiysk',
     
       languages: {
-          russian: 'native',
-          english: 'b1'
+        russian: 'native',
+        english: 'b1'
       },
     
       technicalSkills: [
@@ -56,8 +56,8 @@ export function App() {
       ],
     
       discord: 'rikzun',
-      mail: 'rik.zunqq@gmail.com',
-      github: 'https://github.com/rikzun'
+      mail: '[rik.zunqq@gmail.com](mailto:rik.zunqq@gmail.com)',
+      github: '[https://github.com/rikzun](https://github.com/rikzun)'
     }`
 
     return <ReadonlyPre value={text} />
