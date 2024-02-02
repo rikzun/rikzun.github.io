@@ -1,4 +1,10 @@
-.container {
+@keyframes text_gradient {
+    to {
+        background-position: 100% center;
+    }
+}
+
+pre.container {
     height: inherit;
     width: inherit;
     margin: unset;
@@ -9,4 +15,40 @@
     font-family: inherit;
     font-size: inherit;
     overflow-x: auto;
+
+    > .code {
+        .string { color: #CE9178 }
+        .numeric { color: #B5CEA8 }
+        .variable { color: #4FC1FF }
+        .object-key { color: #9CDCFE }
+        .reserved { color: #569CD6 }
+        .reserved2 {
+            cursor: pointer;
+            font-weight: 600;
+            color: transparent;
+            background-size: 800% auto;
+            background-clip: text;
+            background-image: linear-gradient(90deg,
+                #ff0000,#ffff00,
+                #00ff00,#00ffff,
+                #0000ff,#ff00ff,
+                #ff0000,#ffff00
+            );
+            animation: text_gradient 2s linear infinite;
+            text-decoration: underline;
+        }
+    
+        a {
+            cursor: pointer;
+            text-underline-offset: 2px;
+        }
+    
+        *::selection { color: unset; background-color: #264f78; }
+        &::selection { color: unset; background-color: #264f78; }
+    
+        caret-color: white;
+        margin-top: 1em;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }

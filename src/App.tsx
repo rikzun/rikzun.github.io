@@ -1,19 +1,12 @@
 import './App.style.scss'
-import { Packer, Document } from "docx"
+import { Packer, Document as DocxDocument, TextRun, Paragraph, ExternalHyperlink } from "docx"
 import { ReadonlyPre } from './components/ReadonlyPre'
 import { saveBlob } from './utils/utils'
-
-// function downloadPDF() {
-//     const file = new Document({
-//         sections: [],
-//         background: { color: '#1e1e1e' }
-//     })
-
-//     Packer.toBlob(file).then((v) => saveBlob(v, "kekw.docx"))
-// }
+import { HighlightService, Token } from './highlight.service'
+import { Fragment } from 'react'
 
 export function App() {
-    const text = `const me = {
+    const rawText = `export const me = {
       firstName: 'Mihail',
       lastName: 'Yakimenko',
       age: ${Math.floor((Date.now() - Date.parse('2000-12-11')) / 3154e7)},
@@ -60,5 +53,57 @@ export function App() {
       github: '[https://github.com/rikzun](https://github.com/rikzun)'
     }`
 
-    return <ReadonlyPre value={text} />
+    const downloadPDF = (tokens: Token[][]) => {
+        const colors = {
+            'string': '#CE9178',
+            'numeric': '#B5CEA8',
+            'reserved': '#569CD6',
+            'reserved2': '#C586C0',
+            'variable': '#4FC1FF',
+            'object-key': '#9CDCFE'
+        }
+
+        const file = new DocxDocument({
+            sections: [
+                {
+                    children: tokens.map((line) => (
+                        new Paragraph({
+                            children: line.map((token) => {
+                                const color = token.type ? colors[token.type] : undefined
+
+                                if (token.link) {
+                                    const textMark = new TextRun({text: '\'', color})
+                                    const text = new TextRun({
+                                        text: token.content.substring(1, token.content.length - 1),
+                                        font: "Courier New",
+                                        noProof: true,
+                                        underline: { color: color, type: 'single' },
+                                        color
+                                    })
+
+                                    return new ExternalHyperlink({
+                                        children: [textMark, text, textMark],
+                                        link: token.link
+                                    })
+                                }
+
+                                return new TextRun({
+                                    text: token.content,
+                                    font: "Courier New",
+                                    noProof: true,
+                                    color
+                                })
+                            })
+                        })
+                    ))
+                }
+            ],
+            background: { color: '#1e1e1e' }
+        })
+    
+        Packer.toBlob(file).then((v) => saveBlob(v, "resume.docx"))
+    }
+
+    const tokens = HighlightService.textToTokens(rawText)
+    return <ReadonlyPre value={tokens} exportClick={() => downloadPDF(tokens)} />
 }

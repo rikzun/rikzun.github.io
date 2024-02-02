@@ -1,13 +1,16 @@
-import { array } from 'src/utils/utils'
 import './ReadonlyPre.styles.scss'
+import { array } from 'src/utils/utils'
 import type { SyntheticEvent, KeyboardEvent, FormEvent } from 'react'
-import { useState } from 'react'
-import { CodeHighlight } from '../CodeHighlight'
+import { Fragment, useState } from 'react'
+import { Token } from 'src/highlight.service'
 
-interface ReadonlyPreProps { value: string }
+interface ReadonlyPreProps {
+    value: Token[][]
+    exportClick: () => void
+}
 
 export function ReadonlyPre(props: ReadonlyPreProps) {
-    const [key, setKey] = useState("")
+    const [key, setKey] = useState('')
     const updateKey = () => setKey(crypto.randomUUID())
 
     const acceptableKeyCodes = [
@@ -25,8 +28,8 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
         ...array(12).map((v) => `F${v + 1}`)
     ]
 
-    const acceptableCtrlKeyCodes = [
-        'KeyA', 'KeyC'
+    const unacceptableCtrlKeyCodes = [
+        'KeyX', 'KeyV'
     ]
 
     const eventCancel = (e: SyntheticEvent) => {
@@ -36,14 +39,19 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
-        if (e.ctrlKey && acceptableCtrlKeyCodes.includes(e.code)) return
-        if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
+        if (e.ctrlKey) {
+            if (!unacceptableCtrlKeyCodes.includes(e.code)) return 
+            return eventCancel(e)
+        }
+        else if (!acceptableKeyCodes.includes(e.code)) return eventCancel(e)
     }
 
     const onInput = (e: FormEvent<HTMLPreElement>) => {
         if (e.cancelable) return eventCancel(e)
         updateKey() // for fucking android and firefox
     }
+
+    const maxLineLendth = Math.max(...props.value.map((v) => v.reduce((acc, vv) => acc + vv.content.length, 0)))
 
     return (
         <pre
@@ -58,7 +66,46 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             contentEditable
             suppressContentEditableWarning
         >
-            <CodeHighlight value={props.value} />
+            <div className="code" style={{maxWidth: `${maxLineLendth}ch`}}>
+                {props.value.map((line, lineIndex) => {
+                    return (
+                        <Fragment>
+                            {line.map((token, tokenIndex) => {
+                                const key = lineIndex + token.content + tokenIndex
+                                const className = [token.type, token.type === 'reserved' ? token.type + '__' + token.content : null]
+                                    .filter(Boolean)
+                                    .join(' ')
+
+                                if (token.link) return (
+                                    <span key={key} className={className}>
+                                        '
+                                        <a
+                                            href={token.link}
+                                            className={className}
+                                            target={token.link.startsWith('mailto:') ? undefined : '_blank'}
+                                            contentEditable={false}
+                                        >
+                                            {token.content.substring(1, token.content.length - 1)}
+                                        </a>
+                                        '
+                                    </span>
+                                )
+
+                                const exportClick = token.type === 'reserved2' && token.content === 'export'
+                                    ? props.exportClick
+                                    : undefined
+
+                                return (
+                                    <span key={key} className={className} onClick={exportClick}>
+                                        {token.content}
+                                    </span>
+                                )
+                            })}
+                            <br />
+                        </Fragment>
+                    )
+                })}
+            </div>
         </pre>
     )
 }
