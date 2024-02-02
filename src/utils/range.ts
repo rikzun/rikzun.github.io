@@ -7,7 +7,6 @@ export class Range {
         this.end = end
     }
 
-    contains(other: Range) {
-        return this.start <= other.start && this.end >= other.end
-    }
+    contains(index: number) { return this.start <= index && index <= this.end }
+    containsOther(other: Range) { return this.start <= other.start && other.end <= this.end }
 }
