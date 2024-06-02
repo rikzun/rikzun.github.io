@@ -2,7 +2,6 @@ import { Range } from "./utils/range"
 import { trimStart } from "./utils/utils"
 
 export type TokenType = 'string' | 'numeric' | 'reserved' | 'reserved2' | 'variable' | 'object-key'
-export type TokenSubype = 'const' | 'export'
 export class Token {
     content: string
     type: TokenType | null
@@ -50,7 +49,7 @@ export const HighlightService = new class {
 
     matchNewTokens(text: string, regexp: RegExp, ranges: Range[]): [Range, string][] {
         return this.matchTokens(text, regexp).filter(([range, _]) => (
-            !ranges.some((v) => v.containsOther(range))
+            !ranges.some((v) => v.containsRange(range))
         ))
     }
 

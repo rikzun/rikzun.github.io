@@ -8,5 +8,5 @@ export class Range {
     }
 
     contains(index: number) { return this.start <= index && index <= this.end }
-    containsOther(other: Range) { return this.start <= other.start && other.end <= this.end }
+    containsRange(other: Range) { return this.start <= other.start && other.end <= this.end }
 }

@@ -3,7 +3,7 @@ import { Packer, Document as DocxDocument, TextRun, Paragraph, ExternalHyperlink
 import { ReadonlyPre } from './components/ReadonlyPre'
 import { saveBlob } from './utils/utils'
 import { HighlightService, Token } from './highlight.service'
-import { Fragment } from 'react'
+
 
 export function App() {
     const rawText = `export const me = {
@@ -64,46 +64,50 @@ export function App() {
         }
 
         const file = new DocxDocument({
-            sections: [
-                {
-                    children: tokens.map((line) => (
-                        new Paragraph({
-                            children: line.map((token) => {
-                                const color = token.type ? colors[token.type] : undefined
+            sections: [{
+                children: tokens.map((line) => (
+                    new Paragraph({
+                        children: line.map((token) => {
+                            const color = token.type ? colors[token.type] : undefined
 
-                                if (token.link) {
-                                    const textMark = new TextRun({text: '\'', color})
-                                    const text = new TextRun({
-                                        text: token.content.substring(1, token.content.length - 1),
-                                        font: "Courier New",
-                                        noProof: true,
-                                        underline: { color: color, type: 'single' },
-                                        color
-                                    })
-
-                                    return new ExternalHyperlink({
-                                        children: [textMark, text, textMark],
-                                        link: token.link
-                                    })
-                                }
-
-                                return new TextRun({
-                                    text: token.content,
-                                    font: "Courier New",
+                            if (token.link) {
+                                const textMark = new TextRun({text: '\'', color})
+                                const text = new TextRun({
+                                    text: token.content.substring(1, token.content.length - 1),
+                                    font: 'Courier New',
                                     noProof: true,
+                                    underline: { color: color, type: 'single' },
                                     color
                                 })
+
+                                return new ExternalHyperlink({
+                                    children: [textMark, text, textMark],
+                                    link: token.link
+                                })
+                            }
+
+                            return new TextRun({
+                                text: token.content,
+                                font: 'Courier New',
+                                noProof: true,
+                                color
                             })
                         })
-                    ))
-                }
-            ],
+                    })
+                ))
+            }],
             background: { color: '#1e1e1e' }
         })
     
-        Packer.toBlob(file).then((v) => saveBlob(v, "resume.docx"))
+        Packer.toBlob(file).then((blob) =>
+            saveBlob(blob, 'resume.docx')
+        )
     }
 
-    const tokens = HighlightService.textToTokens(rawText)
-    return <ReadonlyPre value={tokens} exportClick={() => downloadPDF(tokens)} />
+    return (
+        <ReadonlyPre
+            value={HighlightService.textToTokens(rawText)}
+            exportClick={downloadPDF}
+        />
+    )
 }

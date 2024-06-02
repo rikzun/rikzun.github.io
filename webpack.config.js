@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const ReactRefreshTypeScript = require('react-refresh-typescript')
-const CopyWebpackPlugin = require("copy-webpack-plugin")
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 
@@ -55,7 +55,7 @@ module.exports = (env) => {
                 {
                     test: /\.svg$/i,
                     issuer: /\.[jt]sx?$/,
-                    use: ["@svgr/webpack"]
+                    use: ['@svgr/webpack']
                 }
             ]
         },
