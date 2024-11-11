@@ -9,7 +9,7 @@ export function App() {
     const rawText = `export const me = {
       firstName: 'Mihail',
       lastName: 'Yakimenko',
-      age: ${Math.floor((Date.now() - Date.parse('2000-12-11')) / 3154e7)},
+      age: ${Math.floor((Date.now() - (new Date(2000, 10, 12)).getTime()) / 3154e7)},
       sex: 'male',
       address: 'Russia, Novorossiysk',
     
@@ -34,7 +34,7 @@ export function App() {
       workExperience: [
         {
           company: '7Winds',
-          time: '${Math.floor((Date.now() - Date.parse('2021-06-07')) / 864e5)} days',
+          time: '${Math.floor((Date.now() - (new Date(2021, 6, 7).getTime())) / 864e5)} days',
           positions: [
             'Frontend Developer (React)',
             'Fullstack Developer (React, Kotlin)'
