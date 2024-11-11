@@ -67,7 +67,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
         >
             <div className="code" style={{maxWidth: `${maxLineLendth}ch`}}>
                 {props.value.map((line, lineIndex) => (
-                    <Fragment>
+                    <Fragment key={lineIndex}>
                         {line.map((token, tokenIndex) => {
                             const key = lineIndex + token.content + tokenIndex
                             const className = [token.type, token.type === 'reserved' ? token.type + '__' + token.content : null]
