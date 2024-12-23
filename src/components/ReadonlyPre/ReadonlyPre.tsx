@@ -50,7 +50,7 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
                 acc + token.content.length, 0
             )
         )
-    )
+    ) + 1
 
     return (
         <pre
