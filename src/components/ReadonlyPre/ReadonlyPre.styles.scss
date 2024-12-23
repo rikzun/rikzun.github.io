@@ -5,6 +5,8 @@
 }
 
 pre.container {
+    display: flex;
+    align-items: center;
     height: inherit;
     width: inherit;
     margin: unset;
@@ -43,7 +45,6 @@ pre.container {
         &::selection { color: unset; background-color: #264f78; }
     
         caret-color: white;
-        margin-top: 1em;
         margin-left: auto;
         margin-right: auto;
     }
