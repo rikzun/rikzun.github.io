@@ -19,7 +19,8 @@ export function App() {
       },
     
       technicalSkills: [
-        'JavaScript', 'TypeScript', 'Kotlin',
+        'JavaScript', 'TypeScript',
+        'Kotlin', 'C++',
         'HTML', 'CSS', 'CSS preprocessors',
         'React', 'Vue', 'Svelte',
         'Webpack', 'Node.js', 'Git'
@@ -27,13 +28,13 @@ export function App() {
     
       familiarWith: [
         'Figma',
-        'C++', 'C#',
-        'Python', 'APL'
+        'C#', 'Python',
+        'APL'
       ],
     
       workExperience: [
         {
-          company: '7Winds',
+          company: '7 Winds',
           time: '${Math.floor((Date.now() - (new Date(2021, 6, 7).getTime())) / 864e5)} days',
           positions: [
             'Frontend Developer (React)',
