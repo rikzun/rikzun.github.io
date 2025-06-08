@@ -1,0 +1,86 @@
+/*!*************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/App.style.scss ***!
+  \*************************************************************************************************************/
+body {
+  margin: unset;
+  height: 100vh;
+  width: 100vw;
+  font-size: 1em;
+  font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+  font-weight: 400;
+  line-height: 19px;
+  background-color: #1e1e1e;
+  color: white;
+}
+body > #root {
+  height: inherit;
+  width: inherit;
+  position: relative;
+}
+/*!*********************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/ReadonlyPre/ReadonlyPre.styles.scss ***!
+  \*********************************************************************************************************************************************/
+@keyframes text_gradient {
+  to {
+    background-position: 100% center;
+  }
+}
+pre.container {
+  display: flex;
+  align-items: center;
+  height: inherit;
+  width: inherit;
+  margin: unset;
+  outline: unset;
+  word-break: break-word;
+  white-space: break-spaces;
+  line-height: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  overflow-x: auto;
+}
+pre.container > .code {
+  font-size: 14px;
+  caret-color: white;
+  margin-left: auto;
+  margin-right: auto;
+}
+pre.container > .code .string {
+  color: #CE9178;
+}
+pre.container > .code .numeric {
+  color: #B5CEA8;
+}
+pre.container > .code .variable {
+  color: #4FC1FF;
+}
+pre.container > .code .object-key {
+  color: #9CDCFE;
+}
+pre.container > .code .reserved {
+  color: #569CD6;
+}
+pre.container > .code .reserved2 {
+  cursor: pointer;
+  font-weight: 600;
+  color: transparent;
+  background-size: 800% auto;
+  background-clip: text;
+  background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000, #ffff00);
+  animation: text_gradient 2s linear infinite;
+  text-decoration: underline;
+}
+pre.container > .code a {
+  cursor: pointer;
+  text-underline-offset: 2px;
+}
+pre.container > .code *::selection {
+  color: unset;
+  background-color: #264f78;
+}
+pre.container > .code::selection {
+  color: unset;
+  background-color: #264f78;
+}
+
+/*# sourceMappingURL=main.css.map*/
