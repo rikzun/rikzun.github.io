@@ -1,21 +1,21 @@
 const path = require('path')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const ReactRefreshTypeScript = require('react-refresh-typescript')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const ReactRefreshTypeScript = require('react-refresh-typescript').default
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
+const IS_SERVE = process.env.WEBPACK_SERVE ?? false
 
 const PATH_ENTRY = path.join(__dirname, 'src', 'index.tsx')
 const PATH_TEMPLATE_ENTRY = path.join(__dirname, 'public', 'index.html')
 const PATH_PUBLIC_FOLDER = path.join(__dirname, 'public')
 const PATH_OUTPUT_FOLDER = path.join(__dirname, 'build')
 
-module.exports = (env) => {
-    const IS_SERVE = env.WEBPACK_SERVE ?? false
-    
+module.exports = () => {
     const config = {
         mode: IS_DEVELOPMENT ? 'development' : 'production',
         devtool: IS_DEVELOPMENT ? 'source-map' : undefined,
@@ -26,10 +26,33 @@ module.exports = (env) => {
             chunkFilename: '[name].[chunkhash:8].js',
             publicPath: 'auto'
         },
+        cache: {
+            type: 'filesystem',
+            buildDependencies: {
+                config: [__filename]
+            }
+        },
+        optimization: {
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all'
+                    }
+                }
+            },
+            runtimeChunk: 'single'
+        },
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.sass'],
             fallback: { process: false },
-            modules: [__dirname, 'node_modules']
+            modules: [__dirname, 'node_modules'],
+            alias: {
+                '@assets': path.resolve(__dirname, 'src/assets'),
+                '@components': path.resolve(__dirname, 'src/components')
+            }
         },
         devServer: {
             hot: true,
@@ -46,7 +69,7 @@ module.exports = (env) => {
                 },
                 {
                     test: /\.s?[ca]ss$/i,
-                    use: ['style-loader', 'css-loader', 'sass-loader']
+                    use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
                 },
                 {
                     test: /\.(png|jpe?g|gif|webp|ico)$/i,
@@ -60,14 +83,15 @@ module.exports = (env) => {
             ]
         },
         plugins: [
+            new ForkTsCheckerWebpackPlugin(),
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 template: PATH_TEMPLATE_ENTRY,
                 filename: 'index.html?[fullhash:8]'
             }),
             new MiniCssExtractPlugin({
-                filename: '[name].[fullhash:8].css',
-                chunkFilename: '[name].[chunkhash:8].css'
+                filename: IS_DEVELOPMENT ? '[name].css' : '[name].[contenthash:8].css',
+                chunkFilename: IS_DEVELOPMENT ? '[id].css' : '[id].[contenthash:8].css',
             }),
             new CopyWebpackPlugin({
                 patterns: [{
@@ -90,8 +114,7 @@ module.exports = (env) => {
             options: {
                 getCustomTransformers: () => ({
                     before: [ReactRefreshTypeScript()]
-                }),
-                transpileOnly: true
+                })
             }
         }
     }

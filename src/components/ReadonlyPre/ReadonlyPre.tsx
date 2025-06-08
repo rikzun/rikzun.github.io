@@ -4,6 +4,24 @@ import type { KeyboardEvent, FormEvent } from 'react'
 import { Fragment, useState } from 'react'
 import { ReadonlyPreProps } from 'src/components/ReadonlyPre/ReadonlyPre.types'
 
+const acceptableKeyCodes = [
+    'Tab',
+    'ShiftLeft',
+    'ShiftRight',
+    'Home',
+    'End',
+    'PageUp',
+    'PageDown',
+    'ArrowUp',
+    'ArrowLeft',
+    'ArrowDown',
+    'ArrowRight',
+    ...array(12).map((v) => 'F' + (v + 1))
+]
+
+const unacceptableCtrlKeyCodes = [
+    'KeyX', 'KeyV'
+]
 
 export function ReadonlyPre(props: ReadonlyPreProps) {
     const [
@@ -11,25 +29,6 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
         setKey,
         updateKey = () => setKey(crypto.randomUUID())
     ] = useState(crypto.randomUUID())
-
-    const acceptableKeyCodes = [
-        'Tab',
-        'ShiftLeft',
-        'ShiftRight',
-        'Home',
-        'End',
-        'PageUp',
-        'PageDown',
-        'ArrowUp',
-        'ArrowLeft',
-        'ArrowDown',
-        'ArrowRight',
-        ...array(12).map((v) => 'F' + (v + 1))
-    ]
-
-    const unacceptableCtrlKeyCodes = [
-        'KeyX', 'KeyV'
-    ]
 
     const onKeyDown = (e: KeyboardEvent) => {
         if (e.ctrlKey) {

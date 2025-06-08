@@ -2,41 +2,40 @@ import './App.style.scss'
 import { Packer, Document as DocxDocument, TextRun, Paragraph, ExternalHyperlink } from "docx"
 import { ReadonlyPre } from './components/ReadonlyPre'
 import { saveBlob } from './utils/utils'
-import { HighlightService, Token } from './highlight.service'
-
+import { HightlightTools, type Token } from './highlight'
 
 export function App() {
     const rawText = `export const me = {
       firstName: 'Mihail',
       lastName: 'Yakimenko',
-      age: ${Math.floor((Date.now() - (new Date(2000, 10, 12)).getTime()) / 3154e7)},
+      age: ${Math.floor((Date.now() - (new Date(2000, 10, 12)).getTime()) / 31557600000)},
       sex: 'male',
       address: 'Russia, Novorossiysk',
     
       languages: {
-        russian: 'native',
-        english: 'b1'
+        russian: 'native',  
+        english: 'B1'
       },
     
       technicalSkills: [
         'JavaScript', 'TypeScript',
-        'Kotlin', 'C++',
+        'Kotlin', 'C++', 'Go',
         'HTML', 'CSS', 'CSS preprocessors',
         'React', 'Vue', 'Svelte',
         'Webpack', 'Node.js', 'Git'
       ],
     
       familiarWith: [
-        'Figma',
-        'C#', 'Python',
-        'APL'
+        'C#', 'Python', 'Zig',
+        'APL', 'SQL',
+        'Vulkan', 'Figma'
       ],
     
       workExperience: [
         {
           company: '7 Winds',
-          time: '${Math.floor((Date.now() - (new Date(2021, 6, 7).getTime())) / 864e5)} days',
-          positions: [
+          duration: '${((Date.now() - new Date(2021, 6, 7).getTime()) / 31557600000).toFixed(1)} years',
+          position: [
             'Frontend Developer (React)',
             'Fullstack Developer (React, Kotlin)'
           ]
@@ -45,7 +44,7 @@ export function App() {
     
       desiredPositions: [
         'Frontend Developer (React, Vue, Svelte, Vanilla)',
-        'Backend Developer (Kotlin, JavaScript, TypeScript, C#)',
+        'Backend Developer (Kotlin, JavaScript, TypeScript, C#, Go)',
         'Fullstack Developer'
       ],
     
@@ -107,7 +106,7 @@ export function App() {
 
     return (
         <ReadonlyPre
-            value={HighlightService.textToTokens(rawText)}
+            value={HightlightTools.textToTokens(rawText)}
             exportClick={downloadPDF}
         />
     )

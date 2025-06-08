@@ -1,7 +1,6 @@
-import { Token } from 'src/highlight.service'
-export type { ReadonlyPreProps }
+import type { Token } from 'src/highlight'
 
-interface ReadonlyPreProps {
+export interface ReadonlyPreProps {
     value: Token[][]
     exportClick: (tokens: Token[][]) => void
 }

@@ -1,7 +1,14 @@
 import { Range } from "./utils/range"
 import { trimStart } from "./utils/utils"
 
-export type TokenType = 'string' | 'numeric' | 'reserved' | 'reserved2' | 'variable' | 'object-key'
+export type TokenType =
+    | 'string'
+    | 'numeric'
+    | 'reserved'
+    | 'reserved2'
+    | 'variable'
+    | 'object-key'
+
 export class Token {
     content: string
     type: TokenType | null
@@ -31,34 +38,34 @@ export class TokenList {
     }
 }
 
-export const HighlightService = new class {
-    regex = {
+export class HightlightTools {
+    static readonly regex = {
         string: /('(?:[^'\\]|\\.)*')/g,
         numeric: /(\d+)/g,
         objectKey: /(\w+\s*:)/g,
         reserved: /(const|export)/g,
 
         stringLink: /\[(.*)\]\((.*)\)/
-    }
+    } as const
 
-    matchTokens(text: string, regexp: RegExp): [Range, string][] {
+    static matchTokens(text: string, regexp: RegExp): [Range, string][] {
         return [...text.matchAll(regexp)].map(({1: string, index}) => (
             [new Range(index!, index! + string.length - 1), string]
         ))
     }
 
-    matchNewTokens(text: string, regexp: RegExp, ranges: Range[]): [Range, string][] {
+    static matchNewTokens(text: string, regexp: RegExp, ranges: Range[]): [Range, string][] {
         return this.matchTokens(text, regexp).filter(([range, _]) => (
             !ranges.some((v) => v.containsRange(range))
         ))
     }
 
-    testLinkString(text: string) {
+    static testLinkString(text: string) {
         return this.regex.stringLink.test(text)
     }
 
     /** @returns [newTitle, link] */
-    takeLinkFromString(text: string): [string, string | null] {
+    static takeLinkFromString(text: string): [string, string | null] {
         const matchTitle = text.match(this.regex.stringLink)
         if (!matchTitle) return [text, null]
 
@@ -66,12 +73,12 @@ export const HighlightService = new class {
     }
 
     /** @returns [range, variable] */
-    takeVariable(text: string, range: Range): [Range, string] | [] {
+    static takeVariable(text: string, range: Range): [Range, string] | [] {
         const match = (' '.repeat(range.end + 1) + text.substring(range.end + 1)).match(/\w+/)
         return match ? [new Range(match.index!, match.index! + match[0].length - 1), match[0]] : []
     }
 
-    textToTokens(rawText: string): Token[][] {
+    static textToTokens(rawText: string): Token[][] {
         const tokens = rawText.split('\n').map((rawLine) => {
             const line = trimStart(rawLine, 4)
             const tokenList = new TokenList()
@@ -116,4 +123,4 @@ export const HighlightService = new class {
 
         return tokens
     }
-}()
+}
