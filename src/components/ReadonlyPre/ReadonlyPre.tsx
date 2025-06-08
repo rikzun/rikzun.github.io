@@ -1,8 +1,8 @@
 import './ReadonlyPre.styles.scss'
-import { array, eventCancel } from 'src/utils/utils'
+import { array, eventCancel } from '@utils/utils'
 import type { KeyboardEvent, FormEvent } from 'react'
 import { Fragment, useState } from 'react'
-import { ReadonlyPreProps } from 'src/components/ReadonlyPre/ReadonlyPre.types'
+import { ReadonlyPreProps } from './ReadonlyPre.types'
 
 const acceptableKeyCodes = [
     'Tab',

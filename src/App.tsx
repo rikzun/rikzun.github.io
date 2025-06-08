@@ -1,7 +1,7 @@
 import './App.style.scss'
 import { Packer, Document as DocxDocument, TextRun, Paragraph, ExternalHyperlink } from "docx"
-import { ReadonlyPre } from './components/ReadonlyPre'
-import { saveBlob } from './utils/utils'
+import { ReadonlyPre } from '@components/ReadonlyPre'
+import { saveBlob } from '@utils/utils'
 import { HightlightTools, type Token } from './highlight'
 
 export function App() {
