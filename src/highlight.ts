@@ -1,13 +1,13 @@
 import { Range } from "./utils/range"
-import { trimStart } from "./utils/utils"
+import { trimStart } from "./utils/std"
 
 export type TokenType =
-    | 'string'
-    | 'numeric'
-    | 'reserved'
-    | 'reserved2'
-    | 'variable'
-    | 'object-key'
+    | "string"
+    | "numeric"
+    | "reserved"
+    | "reserved2"
+    | "variable"
+    | "object-key"
 
 export class Token {
     content: string
@@ -25,11 +25,23 @@ export class TokenList {
     private data: Map<Range, Token>
     constructor() { this.data = new Map() }
 
-    collect(range: Range, token: Token) { this.data.set(range, token) }
+    collect(range: Range, token: Token) {
+        this.data.set(range, token)
+    }
 
-    getEntries() { return [...this.data.entries()] }
-    getRanges() { return [...this.data.keys()] }
-    getRangeByEntry(number: number) { return this.getRanges().find((v) => v.contains(number)) ?? null }
+    getEntries() {
+        return [...this.data.entries()]
+    }
+
+    getRanges() {
+        return [...this.data.keys()]
+    }
+
+    getRangeByEntry(number: number) {
+        return this.getRanges()
+            .find((v) => v.contains(number))
+            ?? null
+    }
 
     getSortedTokens() {
         return this.getEntries()
@@ -40,7 +52,7 @@ export class TokenList {
 
 export class HightlightTools {
     static readonly regex = {
-        string: /('(?:[^'\\]|\\.)*')/g,
+        string: /("(?:[^"\\]|\\.)*")/g,
         numeric: /(\d+)/g,
         objectKey: /(\w+\s*:)/g,
         reserved: /(const|export)/g,

@@ -1,66 +1,66 @@
-import './App.style.scss'
+import "./App.style.scss"
 import { Packer, Document as DocxDocument, TextRun, Paragraph, ExternalHyperlink } from "docx"
-import { ReadonlyPre } from '@components/ReadonlyPre'
-import { saveBlob } from '@utils/utils'
-import { HightlightTools, type Token } from './highlight'
+import { ReadonlyPre } from "@components/ReadonlyPre"
+import { saveBlob } from "@utils/std"
+import { HightlightTools, type Token } from "./highlight"
 
 export function App() {
     const rawText = `export const me = {
-      firstName: 'Mihail',
-      lastName: 'Yakimenko',
+      firstName: "Mihail",
+      lastName: "Yakimenko",
       age: ${Math.floor((Date.now() - (new Date(2000, 10, 12)).getTime()) / 31557600000)},
-      sex: 'male',
-      address: 'Russia, Novorossiysk',
+      sex: "male",
+      address: "Russia, Novorossiysk",
     
       languages: {
-        russian: 'native',  
-        english: 'B1'
+        russian: "native",  
+        english: "B1"
       },
     
       technicalSkills: [
-        'JavaScript', 'TypeScript',
-        'Kotlin', 'C++', 'Go',
-        'HTML', 'CSS', 'CSS preprocessors',
-        'React', 'Vue', 'Svelte',
-        'Webpack', 'Node.js', 'Git'
+        "JavaScript", "TypeScript",
+        "Kotlin", "C++", "Go",
+        "HTML", "CSS", "CSS preprocessors",
+        "React", "Vue", "Svelte",
+        "Webpack", "Node.js", "Git"
       ],
     
       familiarWith: [
-        'C#', 'Python', 'Zig',
-        'APL', 'SQL',
-        'Vulkan', 'Figma'
+        "C#", "Python", "Zig",
+        "APL", "SQL",
+        "Vulkan", "Figma"
       ],
     
       workExperience: [
         {
-          company: '7 Winds',
-          duration: '4.2 years',
+          company: "7 Winds",
+          duration: "4.2 years",
           position: [
-            'Frontend Developer (React)',
-            'Fullstack Developer (React, Kotlin)'
+            "Frontend Developer (React)",
+            "Fullstack Developer (React, Kotlin)"
           ]
         }
       ],
     
       desiredPositions: [
-        'Frontend Developer (React, Vue, Svelte, Vanilla)',
-        'Backend Developer (Kotlin, JavaScript, TypeScript, C#, Go)',
-        'Fullstack Developer'
+        "Frontend Developer (React, Vue, Svelte, Vanilla)",
+        "Backend Developer (Kotlin, JavaScript, TypeScript, C#, Go)",
+        "Fullstack Developer"
       ],
     
-      discord: 'rikzun',
-      mail: '[rik.zunqq@gmail.com](mailto:rik.zunqq@gmail.com)',
-      github: '[https://github.com/rikzun](https://github.com/rikzun)'
+      discord: "rikzun",
+      mail: "[rik.zunqq@gmail.com](mailto:rik.zunqq@gmail.com)",
+      github: "[https://github.com/rikzun](https://github.com/rikzun)"
     }`
 
     const downloadPDF = (tokens: Token[][]) => {
         const colors = {
-            'string': '#CE9178',
-            'numeric': '#B5CEA8',
-            'reserved': '#569CD6',
-            'reserved2': '#C586C0',
-            'variable': '#4FC1FF',
-            'object-key': '#9CDCFE'
+            "string": "#CE9178",
+            "numeric": "#B5CEA8",
+            "reserved": "#569CD6",
+            "reserved2": "#C586C0",
+            "variable": "#4FC1FF",
+            "object-key": "#9CDCFE"
         }
 
         const file = new DocxDocument({
@@ -71,12 +71,12 @@ export function App() {
                             const color = token.type ? colors[token.type] : undefined
 
                             if (token.link) {
-                                const textMark = new TextRun({text: '\'', color})
+                                const textMark = new TextRun({text: "'", color})
                                 const text = new TextRun({
                                     text: token.content.substring(1, token.content.length - 1),
-                                    font: 'Courier New',
+                                    font: "Courier New",
                                     noProof: true,
-                                    underline: { color: color, type: 'single' },
+                                    underline: { color: color, type: "single" },
                                     color
                                 })
 
@@ -88,7 +88,7 @@ export function App() {
 
                             return new TextRun({
                                 text: token.content,
-                                font: 'Courier New',
+                                font: "Courier New",
                                 noProof: true,
                                 color
                             })
@@ -100,7 +100,7 @@ export function App() {
         })
     
         Packer.toBlob(file).then((blob) =>
-            saveBlob(blob, 'resume.docx')
+            saveBlob(blob, "resume.docx")
         )
     }
 

@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "author": "rikzun",
   "scripts": {
-    "start": "webpack serve --progress",
-    "build": "webpack build --progress"
+    "start": "cross-env NODE_OPTIONS='--experimental-transform-types' rspack serve",
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS='--experimental-transform-types' rspack build"
   },
   "dependencies": {
     "docx": "^9.5.0",
@@ -12,25 +12,17 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.0",
+    "@rspack/cli": "^1.4.8",
+    "@rspack/core": "^1.4.8",
+    "@rspack/plugin-react-refresh": "^1.4.3",
     "@svgr/webpack": "^8.1.0",
-    "@swc/core": "^1.11.31",
-    "@types/node": "^22.15.30",
-    "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.6",
-    "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^13.0.0",
-    "css-loader": "^7.1.2",
-    "fork-ts-checker-webpack-plugin": "^9.1.0",
-    "html-webpack-plugin": "^5.6.3",
-    "mini-css-extract-plugin": "^2.9.2",
-    "sass": "^1.89.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.5",
+    "cross-env": "^7.0.3",
+    "react-refresh": "^0.17.0",
+    "sass-embedded": "^1.89.2",
     "sass-loader": "^16.0.5",
-    "style-loader": "^4.0.0",
-    "swc-loader": "^0.2.6",
-    "typescript": "^5.8.3",
-    "webpack": "^5.99.9",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.2"
+    "ts-checker-rspack-plugin": "^1.1.4",
+    "typescript": "^5.8.3"
   }
 }

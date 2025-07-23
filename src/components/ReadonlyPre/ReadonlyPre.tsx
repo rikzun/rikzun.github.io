@@ -1,26 +1,26 @@
-import './ReadonlyPre.styles.scss'
-import { array, eventCancel } from '@utils/utils'
-import type { KeyboardEvent, FormEvent } from 'react'
-import { Fragment, useState } from 'react'
-import { ReadonlyPreProps } from './ReadonlyPre.types'
+import "./ReadonlyPre.styles.scss"
+import { array, eventCancel } from "@utils/std"
+import type { KeyboardEvent, FormEvent } from "react"
+import { Fragment, useState } from "react"
+import { ReadonlyPreProps } from "./ReadonlyPre.types"
 
 const acceptableKeyCodes = [
-    'Tab',
-    'ShiftLeft',
-    'ShiftRight',
-    'Home',
-    'End',
-    'PageUp',
-    'PageDown',
-    'ArrowUp',
-    'ArrowLeft',
-    'ArrowDown',
-    'ArrowRight',
-    ...array(12).map((v) => 'F' + (v + 1))
+    "Tab",
+    "ShiftLeft",
+    "ShiftRight",
+    "Home",
+    "End",
+    "PageUp",
+    "PageDown",
+    "ArrowUp",
+    "ArrowLeft",
+    "ArrowDown",
+    "ArrowRight",
+    ...array(12).map((v) => "F" + (v + 1))
 ]
 
 const unacceptableCtrlKeyCodes = [
-    'KeyX', 'KeyV'
+    "KeyX", "KeyV"
 ]
 
 export function ReadonlyPre(props: ReadonlyPreProps) {
@@ -64,31 +64,31 @@ export function ReadonlyPre(props: ReadonlyPreProps) {
             contentEditable
             suppressContentEditableWarning
         >
-            <div className="code" style={{maxWidth: `${maxLineLendth}ch`}}>
+            <div className="code" style={{maxWidth: maxLineLendth + "ch"}}>
                 {props.value.map((line, lineIndex) => (
                     <Fragment key={lineIndex}>
                         {line.map((token, tokenIndex) => {
                             const key = lineIndex + token.content + tokenIndex
-                            const className = [token.type, token.type === 'reserved' ? token.type + '__' + token.content : null]
+                            const className = [token.type, token.type === "reserved" ? token.type + "__" + token.content : null]
                                 .filter(Boolean)
-                                .join(' ')
+                                .join(" ")
 
                             if (token.link) return (
                                 <span key={key} className={className}>
-                                    '
+                                    "
                                     <a
                                         href={token.link}
                                         className={className}
-                                        target={token.link.startsWith('mailto:') ? undefined : '_blank'}
+                                        target={token.link.startsWith("mailto:") ? undefined : "_blank"}
                                         contentEditable={false}
                                     >
                                         {token.content.substring(1, token.content.length - 1)}
                                     </a>
-                                    '
+                                    "
                                 </span>
                             )
 
-                            const exportClick = token.type === 'reserved2' && token.content === 'export'
+                            const exportClick = token.type === "reserved2" && token.content === "export"
                                 ? () => props.exportClick(props.value)
                                 : undefined
 
