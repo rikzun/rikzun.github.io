@@ -34,7 +34,7 @@ export function App() {
       workExperience: [
         {
           company: '7 Winds',
-          duration: '${((Date.now() - new Date(2021, 6, 7).getTime()) / 31557600000).toFixed(1)} years',
+          duration: '4.2 years',
           position: [
             'Frontend Developer (React)',
             'Fullstack Developer (React, Kotlin)'
