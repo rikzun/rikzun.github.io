@@ -96,7 +96,7 @@ export function App() {
                     })
                 ))
             }],
-            background: { color: '#1e1e1e' }
+            background: { color: "#1E1E1E" }
         })
     
         Packer.toBlob(file).then((blob) =>

@@ -4,11 +4,11 @@ export function array(length: number) {
     return Array.from(Array(length).keys())
 }
 
-export function saveBlob(blob: Blob, fileName: string = 'undefined') {
+export function saveBlob(blob: Blob, fileName: string = "undefined") {
     const url = window.URL.createObjectURL(blob)
-    const element = document.createElement('a')
+    const element = document.createElement("a")
 
-    element.style.display = 'none'
+    element.style.display = "none"
     element.href = url
     element.download = fileName
     
@@ -21,7 +21,7 @@ export function saveBlob(blob: Blob, fileName: string = 'undefined') {
 
 export function trimStart(str: string, length: number): string {
     let index = 0
-    while (index < str.length && index < length && str[index] === ' ') index++
+    while (index < str.length && index < length && str[index] === " ") index++
     
     return str.slice(index)
 }

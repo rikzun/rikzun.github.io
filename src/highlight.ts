@@ -86,46 +86,46 @@ export class HightlightTools {
 
     /** @returns [range, variable] */
     static takeVariable(text: string, range: Range): [Range, string] | [] {
-        const match = (' '.repeat(range.end + 1) + text.substring(range.end + 1)).match(/\w+/)
+        const match = (" ".repeat(range.end + 1) + text.substring(range.end + 1)).match(/\w+/)
         return match ? [new Range(match.index!, match.index! + match[0].length - 1), match[0]] : []
     }
 
     static textToTokens(rawText: string): Token[][] {
-        const tokens = rawText.split('\n').map((rawLine) => {
+        const tokens = rawText.split("\n").map((rawLine) => {
             const line = trimStart(rawLine, 4)
             const tokenList = new TokenList()
 
             this.matchTokens(line, this.regex.string)
-                .forEach(([range, content]) => tokenList.collect(range, new Token(content, 'string')))
+                .forEach(([range, content]) => tokenList.collect(range, new Token(content, "string")))
 
             this.matchNewTokens(line, this.regex.numeric, tokenList.getRanges())
-                .forEach(([range, content]) => tokenList.collect(range, new Token(content, 'numeric')))
+                .forEach(([range, content]) => tokenList.collect(range, new Token(content, "numeric")))
 
             this.matchNewTokens(line, this.regex.objectKey, tokenList.getRanges())
-                .forEach(([range, content]) => tokenList.collect(range, new Token(content, 'object-key')))
+                .forEach(([range, content]) => tokenList.collect(range, new Token(content, "object-key")))
 
             this.matchNewTokens(line, this.regex.reserved, tokenList.getRanges()).forEach(([range, content]) => {
-                const type = content === 'export' ? 'reserved2' : 'reserved'
+                const type = content === "export" ? "reserved2" : "reserved"
                 tokenList.collect(range, new Token(content, type))
 
-                if (content === 'const') {
+                if (content === "const") {
                     const [varRange, varContent] = this.takeVariable(line, range)
-                    if (varRange && varContent) tokenList.collect(varRange, new Token(varContent, 'variable'))
+                    if (varRange && varContent) tokenList.collect(varRange, new Token(varContent, "variable"))
                 }
             })
 
             // collect unexpected tokens
-            line.split('').forEach((ch, index) => {
+            line.split("").forEach((ch, index) => {
                 if (tokenList.getRangeByEntry(index)) return
                 tokenList.collect(new Range(index, index), new Token(ch))
             })
 
             tokenList.getEntries()
-                .filter(([range, token]) => token.type === 'string' && this.testLinkString(token.content))
+                .filter(([range, token]) => token.type === "string" && this.testLinkString(token.content))
                 .forEach(([range, token]) => {
                     const [content, link] = this.takeLinkFromString(token.content)
 
-                    token.content = `'${content}'`
+                    token.content = `"${content}"`
                     token.link = link
                     range.end = range.start + token.content.length - 1
                 })
